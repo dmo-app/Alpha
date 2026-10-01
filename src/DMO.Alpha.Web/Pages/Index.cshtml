@@ -2,8 +2,10 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Início";
+    Layout = "_DmoShellLayout";
 }
 
+<div class="dmo-shell-page">
 <h1>DMO Alpha</h1>
 
 @if (Model.Actor.IsAuthenticated)
@@ -26,3 +28,4 @@ else
 {
     <p><a asp-page="/Login">Entrar</a></p>
 }
+</div>

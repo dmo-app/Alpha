@@ -15,17 +15,20 @@ public static class DependencyInjection
 
         if (string.IsNullOrWhiteSpace(connectionString))
         {
-            // Default to EF Core InMemory only when no connection string is supplied.
-            // This supports local development and integration tests without PostgreSQL.
-            services.AddDbContext<DmoDbContext>(options =>
-                options.UseInMemoryDatabase("DmoAlpha"));
+            // No silent InMemory fallback: infrastructure wiring without a
+            // configured PostgreSQL connection string is a configuration
+            // error, not a durable persistence setup. Tests that need
+            // InMemory construct DmoDbContext with UseInMemoryDatabase
+            // explicitly.
+            throw new InvalidOperationException(
+                "ConnectionStrings:DmoDatabase is not configured. AddDmoInfrastructure " +
+                "requires a PostgreSQL connection string (environment variable " +
+                "ConnectionStrings__DmoDatabase).");
         }
-        else
-        {
-            services.AddDbContext<DmoDbContext>(options =>
-                options.UseNpgsql(connectionString, npgsql =>
-                    npgsql.MigrationsAssembly(typeof(DmoDbContext).Assembly.FullName)));
-        }
+
+        services.AddDbContext<DmoDbContext>(options =>
+            options.UseNpgsql(connectionString, npgsql =>
+                npgsql.MigrationsAssembly(typeof(DmoDbContext).Assembly.FullName)));
 
         return services;
     }

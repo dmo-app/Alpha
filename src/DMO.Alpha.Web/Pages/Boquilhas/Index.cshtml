@@ -1,6 +1,9 @@
 @page "/31_BOQUILHAS_01_VISUAL_AUTHORITY_boquilhas.html"
 @model DMO.Alpha.Web.Pages.Boquilhas.IndexModel
-@{ Layout = "_DmoShellLayout"; }
+@{
+    Layout = "_DmoShellLayout";
+    var shell = (ShellPresentation)ViewData["Shell"]!;
+}
 @section Head {
 <style>
 :root{--brand:#3c73a8;--brand-dark:#193046;--brand-deep:#0f1d2a;--brand-mid:#315d88;--brand-soft:#e8eff7;--bg:#f6f9fc;--line:#d9e6f2;--text:#172d42;--muted:#64778a;--white:#fff;--green:#527c72;--green-bg:#e5f0eb;--orange:#a97943;--orange-bg:#f7f0e7;--red:#9a625d;--red-bg:#f3e9e7;--shadow:0 8px 24px rgba(25,48,70,.07);--r:14px}
@@ -21,16 +24,70 @@
 .create-grid .date-field{order:5}.btn,.icon-btn{background:var(--brand);border:1px solid var(--brand);color:#fff}.btn:hover,.btn:focus-visible,.icon-btn:hover,.icon-btn:focus-visible{background:#fff;border-color:var(--brand);color:var(--brand);filter:none}.btn.danger{background:var(--red);border-color:var(--red);color:#fff}.btn.danger:hover,.btn.danger:focus-visible{background:#fff;border-color:var(--red);color:var(--red)}.btn:disabled,.btn:disabled:hover{background:#cbd5df;border-color:#cbd5df;color:#fff}.movement.wide{grid-template-columns:82px 72px 1.2fr 60px 65px .9fr 60px 1fr 1fr;min-width:850px}.inline-close{margin-left:auto}.settings-grid{display:grid;gap:10px}.setting-row{display:grid;grid-template-columns:70px minmax(170px,1fr) 2fr auto;gap:12px;align-items:center;padding:11px 12px;background:var(--bg);border:1px solid var(--line);border-radius:10px}.setting-line{font-weight:850;color:var(--brand-dark)}.repairer-tags{display:flex;flex-wrap:wrap;gap:6px}.repairer-tag{background:var(--brand-soft);color:var(--brand-mid);border-radius:999px;padding:5px 9px;font-size:11px;font-weight:700}.settings-section+.settings-section{margin-top:16px}.machine{cursor:pointer}.machine:hover{border-color:#72a0cd}.machine .menu{cursor:default}
 .snapshot-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}.snapshot-note{color:var(--muted);font-size:11px;margin:4px 0 0}.lot-movements{margin-top:14px;border:1px solid var(--line);border-radius:10px;overflow:hidden}.lot-movement{display:grid;grid-template-columns:110px 100px 90px 90px 1fr;gap:12px;padding:10px 12px;border-bottom:1px solid var(--line);font-size:12px}.lot-movement:last-child{border:0}.lot-movement.head{background:var(--bg);color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase}@@media(max-width:1000px){.snapshot-grid{grid-template-columns:repeat(3,1fr)}}
 .record>.card:first-of-type .snapshot-grid{grid-template-columns:repeat(5,1fr)}.record>.card:first-of-type .snapshot-grid .stat:last-child{display:none}
+.native-registo-trace{margin-top:18px}.native-movement-form{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-top:14px}.native-movement-form .field{flex:1;min-width:220px}.native-form-note{width:100%;margin:0;color:var(--muted);font-size:11px}.native-movements{width:100%;border-collapse:collapse;margin-top:10px}.native-movements th{text-align:left;background:var(--bg);color:var(--muted);font-size:10px;font-weight:800;text-transform:uppercase;padding:9px 12px;border-bottom:1px solid var(--line)}.native-movements td{padding:10px 12px;border-bottom:1px solid var(--line);font-size:12px}.native-empty{color:var(--muted);font-size:12px}
 </style>
 <link rel="stylesheet" href="beta-adapter.css?v=settings-20260924">
 <link rel="stylesheet" href="beta-production-overview.css?v=controls-20260924"><script src="beta-session.js" defer></script><script src="beta-production-overview.js?v=rail-20260924"></script><link rel="stylesheet" href="beta-calendar.css?v=calendar-20260924">
 }
   <div class="beta-light-layout beta-bq-layout">
-  <aside id="bqCurrentLines" class="beta-light-rail beta-production-rail" aria-label="Linhas de produção"><div class="beta-production-rail-head"><strong>Linhas de produção</strong><span>Estado atual em máquina</span></div><div class="beta-production-lines"><button type="button" class="active" data-line="B1"><strong>B1</strong><span>5774T173 · 202603</span></button><button type="button" data-line="B2"><strong>B2</strong><span>5810T188 · 202602</span></button><button type="button" data-line="B3"><strong>B3</strong><span>5447T173 · 202602</span></button><button type="button" data-line="C1"><strong>C1</strong><span>9121T173 · 202601</span></button><button type="button" data-line="C2"><strong>C2</strong><span>Sem produção</span></button><button type="button" data-line="C3"><strong>C3</strong><span>7080C002 · 202602</span></button></div></aside>
+  <partial name="_DmoSidepanelBoquilhas" model="shell.Sidepanel" />
   <main class="main beta-light-main">
     <section id="registo" class="view active"><div class="page-head"><div><h2>Registo</h2><p>Selecione uma BQ e abra um registo de movimentos.</p></div><span class="date-chip">Operação diária</span></div>
-      <div class="card"><div class="register-search"><div class="field"><label for="recordSearch">Procurar boquilha ou lote</label><input id="recordSearch" placeholder="Ex.: T194, Y232 ou lote"></div><button class="btn primary" id="newLot">Criar registo</button></div><div class="search-results hidden" id="recordResults"><button class="result" id="selectT194"><strong>T194</strong><span>Lote 12 · Linha B1</span><span class="pill ready">EM PRODUÇÃO</span></button><div class="result hidden" id="notFound">Nenhuma boquilha encontrada.</div></div></div>
-      <div class="register-empty" id="recordEmpty">Crie ou selecione um lote para ativar as ações do registo.</div>
+@if (Model.NativeRegistoActive)
+{
+      <section class="card native-registo-trace" id="nativeRegistoTrace" aria-label="Registo nativo persistido">
+        @if (Model.RegistoTrace is { } trace)
+        {
+        <div class="card-head"><div><h3>Registo BQ @(trace.ToolReference ?? trace.ToolId)@(trace.ToolLot is null ? "" : $" · Lote {trace.ToolLot}")</h3><p>bq_repair_trace_id @trace.BqRepairTraceId · tool_id @trace.ToolId · @(trace.BqContextId is int bqId ? $"bq_id {bqId}" : "bq_id por associar")</p></div></div>
+        <div class="summary-line">@if (trace.Production is { } production)
+        {<text>@production.Reference · Produção @production.ProductionNumber · @production.MachineCode — contexto Job On, apenas leitura</text>}
+        else
+        {<text>Produção por associar — o registo e os movimentos continuam disponíveis.</text>}</div>
+        <div class="stat-grid">
+          <div class="stat"><span>Quantidade legitimamente fora</span><strong>@trace.QuantityLegitimatelyOut</strong></div>
+          <div class="stat"><span>Discrepância acumulada</span><strong>@(trace.AccumulatedDiscrepancy is int accumulated ? accumulated.ToString() : "—")</strong></div>
+          <div class="stat"><span>Movimentos persistidos</span><strong>@trace.Movements.Count</strong></div>
+        </div>
+        @if (Model.MovementRefusal is not null)
+        {
+        <div class="warning" role="alert" style="margin:12px 0 0">@Model.MovementRefusalMessage</div>
+        }
+        <form method="post" asp-page-handler="RegisterMovement" class="native-movement-form">
+          <input type="hidden" name="trace_id" value="@trace.BqRepairTraceId" />
+          <div class="field"><label for="nativeQuantity">Quantidade observada</label><input id="nativeQuantity" name="quantity" type="number" required></div>
+          <button type="submit" class="btn primary" name="movement_type" value="saida">Saída</button>
+          <button type="submit" class="btn" name="movement_type" value="entrada">Entrada</button>
+          <button type="submit" class="btn" name="movement_type" value="entrada_sem_reparacao">Sem reparação</button>
+          <p class="native-form-note">Tokens canónicos: saida · entrada · entrada_sem_reparacao — a discrepância é calculada pelo backend.</p>
+        </form>
+        <div class="card-head" style="margin-top:14px"><h3>Movimentos persistidos</h3></div>
+        @if (trace.Movements.Count == 0)
+        {<p class="native-empty">Sem movimentos registados neste trace.</p>}
+        else
+        {
+        <table class="native-movements">
+          <thead><tr><th>movement_id</th><th>Tipo</th><th>Quantidade</th><th>Discrepância</th></tr></thead>
+          <tbody>
+            @foreach (var movement in trace.Movements)
+            {
+            <tr><td>@movement.MovementId</td><td>@movement.MovementType</td><td>@movement.Quantity</td><td>@(movement.Discrepancy is int discrepancy ? discrepancy.ToString() : "—")</td></tr>
+            }
+          </tbody>
+        </table>
+        }
+        }
+        else
+        {
+        <div class="card-head"><div><h3>Registo não encontrado</h3><p>O bq_repair_trace_id pedido não existe.</p></div></div>
+        @if (Model.MovementRefusal is not null)
+        {
+        <div class="warning" role="alert" style="margin:12px 0 0">@Model.MovementRefusalMessage</div>
+        }
+        }
+      </section>
+}
+      <div class="card" hidden="@(Model.NativeRegistoActive ? "hidden" : null)"><div class="register-search"><div class="field"><label for="recordSearch">Procurar boquilha ou lote</label><input id="recordSearch" placeholder="Ex.: T194, Y232 ou lote"></div><button class="btn primary" id="newLot">Criar registo</button></div><div class="search-results hidden" id="recordResults"><button class="result" id="selectT194"><strong>T194</strong><span>Lote 12 · Linha B1</span><span class="pill ready">EM PRODUÇÃO</span></button><div class="result hidden" id="notFound">Nenhuma boquilha encontrada.</div></div></div>
+      <div class="register-empty" id="recordEmpty" hidden="@(Model.NativeRegistoActive ? "hidden" : null)">Crie ou selecione um lote para ativar as ações do registo.</div>
       <div class="card inline-create" id="inlineCreate" aria-hidden="true"><div class="card-head"><div><h3>Criar novo lote</h3><p style="margin:3px 0 0;color:var(--muted);font-size:12px">O lote fica imediatamente selecionado depois de criado.</p></div></div><form id="inlineLotForm"><div class="create-grid"><div class="field"><label>Boquilha</label><input required placeholder="Ex.: A123"></div><div class="field"><label>Lote</label><input required maxlength="3"></div><div class="field"><label>Total do lote</label><input required type="number" min="1" max="999"></div><div class="field date-field"><label>Data de abertura</label><input required type="date" value="2026-08-14"></div><div class="field"><label>Utilização</label><div class="percent-wrap"><input type="number" min="0" max="100" placeholder="0"><span>%</span></div></div><div class="field lines-field"><label>Linhas permitidas</label><div class="checks"><label class="check line-choice"><input type="checkbox" checked><span>B1</span></label><label class="check line-choice"><input type="checkbox"><span>B2</span></label><label class="check line-choice"><input type="checkbox"><span>B3</span></label><label class="check line-choice"><input type="checkbox"><span>C1</span></label><label class="check line-choice"><input type="checkbox"><span>C2</span></label><label class="check line-choice"><input type="checkbox"><span>C3</span></label></div></div><div class="field notes-field"><label>Observações</label><textarea rows="2"></textarea></div></div><div class="list-actions" style="margin:12px -20px -20px"><button type="button" class="btn" id="cancelInlineLot">Cancelar</button><button class="btn primary">Criar lote</button></div></form></div>
       <div class="record open hidden" id="recordDetail"><div class="record-bar"><button class="btn primary" data-movement="Saída">Saída</button><button class="btn" data-movement="Entrada">Entrada</button><button class="btn" data-movement="Irreparável">Irreparável</button><span class="push"></span><button class="btn">Editar ficheiro</button></div><div class="card"><div class="card-head"><div><h3>Resumo do lote ativo</h3><p class="snapshot-note">Este resumo será guardado como fotografia final quando o lote for fechado.</p></div></div><div class="summary-line"><strong>T194</strong> · Lote 12 · Aberto em 13/08/2026 · Linha atual B1</div><div class="snapshot-grid"><div class="stat"><span>Estado</span><strong>Em produção</strong></div><div class="stat"><span>Total do lote</span><strong>192</strong></div><div class="stat"><span>Data de abertura</span><strong>13/08/2026</strong></div><div class="stat"><span>Movimentos</span><strong>4</strong></div><div class="stat"><span>Linhas permitidas</span><strong>B1 · B3 · C1</strong></div><div class="stat"><span>Vida utilizada</span><strong>68%</strong></div></div></div><div class="card" style="margin-top:14px"><div class="card-head"><h3>Estado atual</h3></div><div class="snapshot-grid"><div class="stat"><span>Na produção</span><strong>144</strong></div><div class="stat"><span>Em reparação</span><strong>48</strong></div><div class="stat"><span>Irreparáveis</span><strong>0</strong></div><div class="stat"><span>Saídas excecionais</span><strong>0</strong></div><div class="stat"><span>Entradas excecionais</span><strong>0</strong></div><div class="stat"><span>Linha atual</span><strong>B1</strong></div></div></div><div class="card" style="margin-top:14px"><div class="card-head"><div><h3>Últimos movimentos</h3><p class="snapshot-note">Confirmação rápida do lote selecionado. O tracking completo está no Histórico.</p></div><button class="btn">Imprimir / Guardar PDF</button></div><div class="lot-movements"><div class="lot-movement head"><span>Movimento</span><span>Quantidade</span><span>Saldo</span><span>Data</span><span>Operador</span></div><div class="lot-movement"><strong>Saída</strong><span>48</span><span>144</span><span>14/08</span><span>João Silva</span></div><div class="lot-movement"><strong>Entrada</strong><span>24</span><span>168</span><span>13/08</span><span>Ana Martins</span></div></div></div></div>
     </section>

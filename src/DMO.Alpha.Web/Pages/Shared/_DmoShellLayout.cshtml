@@ -1,5 +1,7 @@
 @{
     var shell = (ShellPresentation)ViewData["Shell"]!;
+    // Side panels are shell components with a shell-owned open/closed state.
+    var openSidepanel = shell.Sidepanel is { Visible: true } panel ? panel : null;
 }
 <!DOCTYPE html>
 <html lang="pt-PT">
@@ -7,13 +9,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"]</title>
-    <link rel="stylesheet" href="0_ASSET_CANONICAL_DESIGN_SYSTEM.css">
-    <link rel="stylesheet" href="0_ASSET_SHELL.css">
+    <link rel="stylesheet" href="@Url.Content("~/0_ASSET_CANONICAL_DESIGN_SYSTEM.css")">
+    <link rel="stylesheet" href="@Url.Content("~/0_ASSET_SHELL.css")">
     @await RenderSectionAsync("Head", required: false)
-    <link rel="stylesheet" href="beta-shell.css">
-    <link rel="stylesheet" href="/shell-proof.css">
+    <link rel="stylesheet" href="@Url.Content("~/beta-shell.css")">
+    <link rel="stylesheet" href="@Url.Content("~/shell-proof.css")">
 </head>
-<body data-beta-page="@ViewData["BetaPage"]" data-razor-shell="true">
+<body data-beta-page="@ViewData["BetaPage"]" data-razor-shell="true" data-dmo-sidepanel="@(openSidepanel?.Kind.ToString().ToLowerInvariant())">
 <div class="app">
     <header class="dmo-shell-header">
         <partial name="_DmoBranding" model="shell.CurrentModule" />

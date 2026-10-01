@@ -2,8 +2,10 @@
 @model HomeModel
 @{
     ViewData["Title"] = "Home";
+    Layout = "_DmoShellLayout";
 }
 
+<div class="dmo-shell-page">
 <h1>Home Module</h1>
 
 @if (Model.Actor.IsAuthenticated)
@@ -18,3 +20,4 @@
         <p>Profile: @Model.Actor.ProfileLabel</p>
     }
 }
+</div>

@@ -1,0 +1,21 @@
+@model PlaneamentoSidepanelPresentation
+@{
+    // Shell-owned Planeamento side panel (Job On planning context):
+    // - the current day sits near the top;
+    // - the following productions are listed below it;
+    // - selecting a production leads to Job On: the button is the explicit human
+    //   selection and carries the Job On destination for that production;
+    // - the calendar itself belongs to the Planeamento landing surface and is
+    //   mainly a pings/notifications surface, not this side panel.
+    // The panel is a shell component, never a module page. It mounts when the
+    // Planeamento destination surface is implemented and supplies its read model.
+}
+<aside class="beta-light-rail beta-production-rail" aria-label="Planeamento" data-dmo-sidepanel="planeamento">
+    <div class="beta-production-rail-head"><strong>@Model.Title</strong><span>@Model.Subtitle</span></div>
+    <div class="beta-production-lines">
+    @foreach (var production in Model.Productions)
+    {
+        <button type="button" data-jobon-href="@production.Href" disabled="@(production.Href is null)"><strong>@production.DayLabel</strong><span>@production.Detail</span></button>
+    }
+    </div>
+</aside>

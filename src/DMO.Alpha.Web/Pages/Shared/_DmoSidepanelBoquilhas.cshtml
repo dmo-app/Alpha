@@ -1,0 +1,13 @@
+@model SidepanelPresentation
+@{
+    // Shell-owned Boquilhas machine side panel (recovery/modules/boquilhas/REGISTO.md §1-§4):
+    // navigation + live operational projection for the current production. It is a shell
+    // component, never a module page. The seed rows below are the accepted proof's demo
+    // values; the proof adapter (beta-production-overview.js renderRail) owns the runtime
+    // render over the demo boundary until the module read model exists.
+    // Selection must lead towards the Boquilhas operational registration flow (Registo),
+    // never to a historical-only view.
+    // Markup stays identical to the accepted proof composition; the shell-level
+    // open/closed state is carried by the shell layout body, not by this component.
+}
+<aside id="bqCurrentLines" class="beta-light-rail beta-production-rail" aria-label="Linhas de produção"><div class="beta-production-rail-head"><strong>Linhas de produção</strong><span>Estado atual em máquina</span></div><div class="beta-production-lines"><button type="button" class="active" data-line="B1"><strong>B1</strong><span>5774T173 · 202603</span></button><button type="button" data-line="B2"><strong>B2</strong><span>5810T188 · 202602</span></button><button type="button" data-line="B3"><strong>B3</strong><span>5447T173 · 202602</span></button><button type="button" data-line="C1"><strong>C1</strong><span>9121T173 · 202601</span></button><button type="button" data-line="C2"><strong>C2</strong><span>Sem produção</span></button><button type="button" data-line="C3"><strong>C3</strong><span>7080C002 · 202602</span></button></div></aside>

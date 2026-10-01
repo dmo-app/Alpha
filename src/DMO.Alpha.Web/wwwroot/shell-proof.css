@@ -6,3 +6,6 @@ html body .dmo-shell-navigation :is(a,button):focus-visible{outline:2px solid va
 html body .dmo-shell-navigation [aria-disabled="true"]{opacity:.5;cursor:default}
 @media(max-width:720px){html body .dmo-shell-navigation>.dmo-primary-nav,html body .dmo-shell-navigation>.dmo-secondary-nav{padding-inline:14px;gap:14px}}
 @media print{.dmo-shell-navigation{display:none!important}}
+
+/* Native shell pages (landing and module placeholders) share the module workspace padding. */
+.dmo-shell-page{min-width:0;padding:22px 26px 36px}

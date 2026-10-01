@@ -82,10 +82,15 @@ const storage = dom => {
     assert.equal((await fetch(`${base}/${name}`)).status, 200, `Alpha-owned asset: ${name}`);
   }
   assert.equal((await fetch(base + '/login')).status, 200, 'native Alpha login remains available');
-  // Link identities are preserved; unconverted reference destinations are not hosted.
-  const fixture = new JSDOM(fs.readFileSync(baseline, 'utf8')).window.document;
-  assert.equal(parsed.querySelector('.dmo-primary-nav a').getAttribute('href'),
-    fixture.querySelector('a[href="20_JOB_ON_01_VISUAL_AUTHORITY_job-on.html"]').getAttribute('href'));
+  // The Planeamento tab keeps its shell slot visible but has no destination
+  // yet: the broken job-on reference is removed and the tab renders
+  // unavailable (no href) instead of navigating to an unconverted page.
+  const planeamentoLink = parsed.querySelector('.dmo-primary-nav a');
+  assert.equal(planeamentoLink.textContent, 'Planeamento');
+  assert.equal(planeamentoLink.hasAttribute('href'), false,
+    'Planeamento has no destination yet; no broken navigation target');
+  assert.equal(planeamentoLink.getAttribute('aria-disabled'), 'true',
+    'Planeamento renders through the existing unavailable capability');
   assert.equal((await fetch(base + '/20_JOB_ON_01_VISUAL_AUTHORITY_job-on.html')).status, 404,
     'no external reference fallback may serve unconverted pages');
   assert.equal((await fetch(base + '/Program.cs')).status, 404);

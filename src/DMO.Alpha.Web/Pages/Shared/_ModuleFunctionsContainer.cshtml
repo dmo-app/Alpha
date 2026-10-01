@@ -1,7 +1,10 @@
 @model IReadOnlyList<FunctionPresentation>
-<nav class="tabs dmo-secondary-nav" aria-label="Funções do módulo atual">
-@foreach (var entry in Model)
+@if (Model.Count > 0)
 {
-    <partial name="_ModuleFunctionEntry" model="entry" />
+    <nav class="tabs dmo-secondary-nav" aria-label="Funções do módulo atual">
+    @foreach (var entry in Model)
+    {
+        <partial name="_ModuleFunctionEntry" model="entry" />
+    }
+    </nav>
 }
-</nav>

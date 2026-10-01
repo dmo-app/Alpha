@@ -1,5 +1,7 @@
+using DMO.Alpha.Core.Boquilhas;
 using DMO.Alpha.Core.Identity;
 using DMO.Alpha.Core.Production;
+using DMO.Alpha.Core.Tools;
 using Microsoft.EntityFrameworkCore;
 
 namespace DMO.Alpha.Infrastructure.Data;
@@ -23,6 +25,12 @@ public sealed class DmoDbContext : DbContext
     public DbSet<MfContext> MfContexts => Set<MfContext>();
 
     public DbSet<BqContext> BqContexts => Set<BqContext>();
+
+    public DbSet<Tool> Tools => Set<Tool>();
+
+    public DbSet<BqRepairTrace> BqRepairTraces => Set<BqRepairTrace>();
+
+    public DbSet<BqMovement> BqMovements => Set<BqMovement>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -93,6 +101,80 @@ public sealed class DmoDbContext : DbContext
         {
             entity.HasKey(c => c.Id);
             entity.Property(c => c.ToolId).HasMaxLength(100).IsRequired();
+        });
+
+        // Registo canónico de Tools (Ferramentas). O tool_id é a identidade
+        // emitida pelo backend. Não existe nenhuma regra de unicidade sobre
+        // factos da Tool (referência, lote, máquina): são apenas atributos de
+        // descoberta de candidatos e não formam uma chave de identidade
+        // derivada. Um lote diferente persiste como uma Tool distinta com o
+        // seu próprio tool_id.
+        modelBuilder.Entity<Tool>(entity =>
+        {
+            entity.HasKey(t => t.ToolId);
+            entity.Property(t => t.ToolId).IsRequired();
+
+            // O registo cobre exatamente os tipos actualmente em scope.
+            entity.Property(t => t.Type)
+                .HasConversion(
+                    t => ToolTypeTokens.ToStorage(t),
+                    s => ToolTypeTokens.FromStorage(s))
+                .IsRequired();
+
+            entity.Property(t => t.Reference).IsRequired();
+            entity.Property(t => t.Lot).IsRequired();
+        });
+
+        // Registo canónico de reparação de Boquilhas. O trace pertence à
+        // Tool física BQ através do tool_id canónico (âncora permanente) e
+        // referencia bq_id apenas quando o contexto de produção existe;
+        // bq_id não resolvido é null. Não existe estado open/closed nem
+        // lifecycle. A cardinalidade de traces pendentes simultâneos por
+        // tool_id está deliberadamente em aberto no blueprint: nenhuma
+        // regra de unicidade sobre ToolId é imposta aqui. A única unicidade
+        // é a relação canónica decidida: um bq_id tem um único trace
+        // ("one bq_id has one bq_repair_trace_id"). A associação nunca
+        // muta o contexto de produção existente.
+        modelBuilder.Entity<BqRepairTrace>(entity =>
+        {
+            entity.HasKey(t => t.Id);
+
+            entity.HasOne(t => t.Tool)
+                .WithMany()
+                .HasForeignKey(t => t.ToolId)
+                .IsRequired();
+
+            entity.HasOne(t => t.BqContext)
+                .WithMany()
+                .HasForeignKey(t => t.BqContextId);
+
+            entity.HasIndex(t => t.BqContextId).IsUnique();
+        });
+
+        // Movimentos canónicos de Boquilhas. Cada movimento pertence
+        // obrigatoriamente a um bq_repair_trace_id; o tipo é exatamente um
+        // de saida, entrada, entrada_sem_reparacao; a quantidade observada
+        // é registada na totalidade; a discrepância produzida pelo
+        // movimento é um facto histórico (null = sem discrepância).
+        // Nenhuma regra aritmética é imposta à persistência: sem
+        // constraints de sinal, de balanço ou de quantidade — o movimento
+        // preserva o que foi fisicamente observado.
+        modelBuilder.Entity<BqMovement>(entity =>
+        {
+            entity.HasKey(m => m.Id);
+
+            entity.HasOne(m => m.Trace)
+                .WithMany()
+                .HasForeignKey(m => m.BqRepairTraceId)
+                .IsRequired();
+
+            entity.Property(m => m.Type)
+                .HasConversion(
+                    t => BqMovementTypeTokens.ToStorage(t),
+                    s => BqMovementTypeTokens.FromStorage(s))
+                .IsRequired();
+
+            entity.Property(m => m.Quantity).IsRequired();
         });
     }
 }

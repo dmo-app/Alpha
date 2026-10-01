@@ -1,8 +1,12 @@
+using System.Text.Encodings.Web;
+using System.Text.Unicode;
 using Microsoft.AspNetCore.DataProtection;
 using DMO.Alpha.Core.Authentication;
+using DMO.Alpha.Core.Boquilhas;
 using DMO.Alpha.Core.Modules;
 using DMO.Alpha.Core.Runtime;
 using DMO.Alpha.Infrastructure.Authentication;
+using DMO.Alpha.Infrastructure.Boquilhas;
 using DMO.Alpha.Infrastructure.Data;
 using DMO.Alpha.Web.Services;
 using Microsoft.AspNetCore.Authentication;
@@ -57,16 +61,31 @@ else
 // -------------------------------------------------------------------------
 // Data access
 // -------------------------------------------------------------------------
+// Durable persistence: PostgreSQL (incl. Supabase) configured through
+// configuration only — ConnectionStrings:DmoDatabase, fed by the environment
+// variable ConnectionStrings__DmoDatabase, user secrets or the gitignored
+// appsettings.Development.json. No credential is ever committed.
+//
+// InMemory is an explicit Development-only seam: integration tests construct
+// their own InMemory contexts, and a deployed environment never silently
+// pretends in-memory persistence is durable.
 builder.Services.AddDbContext<DmoDbContext>((sp, options) =>
 {
     var connectionString = builder.Configuration.GetConnectionString("DmoDatabase");
     if (!string.IsNullOrWhiteSpace(connectionString))
     {
-        options.UseNpgsql(connectionString);
+        options.UseNpgsql(connectionString, npgsql =>
+            npgsql.MigrationsAssembly(typeof(DmoDbContext).Assembly.FullName));
+    }
+    else if (builder.Environment.IsDevelopment())
+    {
+        options.UseInMemoryDatabase("DmoAlphaModule1");
     }
     else
     {
-        options.UseInMemoryDatabase("DmoAlphaModule1");
+        throw new InvalidOperationException(
+            "ConnectionStrings:DmoDatabase is not configured. Durable PostgreSQL persistence " +
+            "is required outside Development; set the environment variable ConnectionStrings__DmoDatabase.");
     }
 });
 
@@ -76,7 +95,16 @@ builder.Services.AddDbContext<DmoDbContext>((sp, options) =>
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<ICurrentAccountContext, HttpContextCurrentAccountContext>();
 builder.Services.AddSingleton<IModuleRegistry, DefaultModuleRegistry>();
+builder.Services.AddSingleton<ShellStateFactory>();
 builder.Services.AddScoped<DmoSignInService>();
+// Boquilhas write path: registo de um movimento num bq_repair_trace_id existente.
+builder.Services.AddScoped<IRegisterBqMovementHandler, RegisterBqMovementHandler>();
+// Boquilhas read path: read model consumer-specific do surface Registo.
+builder.Services.AddScoped<IBoquilhasRegistoQuery, BoquilhasRegistoQuery>();
+// Boquilhas write path: criar um trace ancorado a um tool_id e associá-lo
+// mais tarde ao seu bq_id de produção.
+builder.Services.AddScoped<ICreateBqRepairTraceHandler, CreateBqRepairTraceHandler>();
+builder.Services.AddScoped<IAssociateBqRepairTraceToContextHandler, AssociateBqRepairTraceToContextHandler>();
 builder.Services.AddHostedService<AdminBootstrapHostedService>();
 
 // -------------------------------------------------------------------------
@@ -99,6 +127,12 @@ builder.Services
 builder.Services.AddAuthorization();
 builder.Services.AddAntiforgery();
 
+// Razor writes pt-PT text (à, ç, ·, —) literally instead of numeric entities:
+// the default HtmlEncoder entity-encodes every non-Basic-Latin character.
+// HTML-sensitive characters (<, >, &, ", ') remain encoded regardless.
+builder.Services.AddSingleton<HtmlEncoder>(
+    HtmlEncoder.Create(UnicodeRanges.BasicLatin, UnicodeRanges.Latin1Supplement, UnicodeRanges.GeneralPunctuation));
+
 // -------------------------------------------------------------------------
 // Razor Pages
 // -------------------------------------------------------------------------
@@ -109,6 +143,15 @@ var dataProtection = builder.Services.AddDataProtection()
 if (OperatingSystem.IsWindows()) dataProtection.ProtectKeysWithDpapi();
 
 var app = builder.Build();
+
+// Fail fast at startup when a deployed environment is missing the durable
+// database configuration: resolving the options executes the policy above,
+// so a misconfigured environment cannot boot and then lose writes on first
+// use. (In Development this resolves the explicit InMemory seam.)
+using (var scope = app.Services.CreateScope())
+{
+    _ = scope.ServiceProvider.GetRequiredService<DbContextOptions<DmoDbContext>>();
+}
 
 if (!app.Environment.IsDevelopment())
 {

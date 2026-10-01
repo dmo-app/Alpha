@@ -4,6 +4,10 @@
  */
 (() => {
   if(document.body.dataset.betaPage!=='boquilhas')return;
+  // The native persisted trace context (?view=registo&trace_id=...) is
+  // server-rendered from canonical persistence and owns the registo flow.
+  // The mock boundary workflow stays out of its way (and vice versa).
+  if(document.getElementById('nativeRegistoTrace'))return;
   const $=selector=>document.querySelector(selector);
 
   // Job On cross-page context is read as a prototype bridge; Boquilhas boundary owns traces/movements.
