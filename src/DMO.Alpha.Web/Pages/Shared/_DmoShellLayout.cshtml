@@ -1,0 +1,27 @@
+@{
+    var shell = (ShellPresentation)ViewData["Shell"]!;
+}
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="0_ASSET_CANONICAL_DESIGN_SYSTEM.css">
+    <link rel="stylesheet" href="0_ASSET_SHELL.css">
+    @await RenderSectionAsync("Head", required: false)
+    <link rel="stylesheet" href="beta-shell.css">
+    <link rel="stylesheet" href="/shell-proof.css">
+</head>
+<body data-beta-page="@ViewData["BetaPage"]" data-razor-shell="true">
+<div class="app">
+    <header class="dmo-shell-header">
+        <partial name="_DmoBranding" model="shell.CurrentModule" />
+        <partial name="_DmoSessionUtilities" model="shell.Session" />
+    </header>
+    <partial name="_DmoNavigation" model="shell" />
+    @RenderBody()
+</div>
+@await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

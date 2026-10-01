@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DMO Alpha</title>
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav>
+            <a asp-page="/Index">DMO Alpha</a>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <span>
+                    @(User.FindFirst(DMO.Alpha.Web.Services.DmoClaimTypes.DisplayName)?.Value ?? "Usuário")
+                    @if (User.FindFirst(DMO.Alpha.Web.Services.DmoClaimTypes.ProfileLabel)?.Value is { } profile)
+                    {
+                        <text>(@profile)</text>
+                    }
+                </span>
+                <form method="post" asp-page="/Logout" style="display:inline">
+                    <button type="submit">Sair</button>
+                </form>
+            }
+        </nav>
+    </header>
+    <main role="main">
+        @RenderBody()
+    </main>
+</body>
+</html>

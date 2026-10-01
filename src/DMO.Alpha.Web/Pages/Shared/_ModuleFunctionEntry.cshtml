@@ -1,0 +1,16 @@
+@model FunctionPresentation
+@if (Model.Visible)
+{
+    if (Model.Href is not null)
+    {
+        <a href="@(Model.Enabled ? Model.Href : null)"
+           class="@Model.CssClass @(Model.Selected ? "active" : "")"
+           aria-current="@(Model.Selected ? "page" : null)"
+           aria-disabled="@(!Model.Enabled ? "true" : null)">@Model.Label</a>
+    }
+    else
+    {
+        <button type="button" class="tab @Model.CssClass @(Model.Selected ? "active" : "")"
+                data-view="@Model.PanelTarget" disabled="@(!Model.Enabled)">@Model.Label</button>
+    }
+}

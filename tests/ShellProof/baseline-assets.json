@@ -1,0 +1,17 @@
+{
+  "shell-proof.css": "a6f39a5fc4d758827027c15427a807320c15c608ef4597769462329cc27c26df",
+  "0_ASSET_CANONICAL_DESIGN_SYSTEM.css": "951a5134afa1cb415cba1e49f037ae33ec65cc9b2ec821261df7d112bbbd25a2",
+  "0_ASSET_SHELL.css": "5b1fd5a6eacd588fca13d7430d76bea54735d4a89d0e931882e3671888a2527c",
+  "0_ASSET_LOGO.png": "9e3536d623f5d2d93524df835a6169b981189078b24323b27e31bb94a1dbcc1f",
+  "beta-adapter.css": "a8a3854c2c86157113162d2eb39262b0d6d60689fb5af71e0520cbe281b45786",
+  "beta-shell.css": "338e3e9c71b31ee6094958fbed4b24e1b4b521c2e76a8c05ec6a762b91f8edb3",
+  "beta-production-overview.css": "27903e73932623d0523c332144b44adcb945a5cb70f26e8b9dbfc9a3625ecb72",
+  "beta-calendar.css": "f5c4f6fb6666d69e7b8cfab50c29e226067093d15331e5b4726e278742b53ee1",
+  "beta-session.js": "5cc141cc6b6542ffd29450277d63fe28b4fd797fd54ad36e596f21d794067a77",
+  "beta-adapter.js": "af6229a0b3171dab83efe703d9994da672baabc934737c57920c204a1a45c68a",
+  "beta-production-overview.js": "ffc9c59be085768c4b6b7738fbda57e69f2f19ce739f979d97b1acc28f96e431",
+  "tool-boundary.js": "c0a6af614bcac04b7115b4bc10e593e6649caf228d52e7dedd97b5a14588c8af",
+  "boquilhas-boundary.js": "84fda8da08ca00e5393537658c32385d3ed0d09978776a861ef760ac77cb685b",
+  "beta-boquilhas-flow.js": "90cc236625e8f7223f9d288b15c25693a98e12f515827ed1d18893949a7a31c0",
+  "beta-settings.js": "970f49762f1b557903fedae1b9d943889f8946d216c6ebad0c25a4e39178e3c8"
+}

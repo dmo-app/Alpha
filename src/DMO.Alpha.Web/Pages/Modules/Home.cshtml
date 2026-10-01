@@ -1,0 +1,20 @@
+@page
+@model HomeModel
+@{
+    ViewData["Title"] = "Home";
+}
+
+<h1>Home Module</h1>
+
+@if (Model.Actor.IsAuthenticated)
+{
+    <p>Signed in as @Model.Actor.DisplayName</p>
+    @if (Model.Actor.IsAdmin)
+    {
+        <p>ADMIN</p>
+    }
+    @if (!string.IsNullOrWhiteSpace(Model.Actor.ProfileLabel))
+    {
+        <p>Profile: @Model.Actor.ProfileLabel</p>
+    }
+}

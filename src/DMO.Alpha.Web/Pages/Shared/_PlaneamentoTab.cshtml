@@ -1,0 +1,10 @@
+@model DestinationPresentation
+<nav class="dmo-primary-nav" aria-label="Planeamento">
+@if (Model.Visible)
+{
+    <a href="@(Model.Enabled ? Model.Href : null)"
+       class="@(Model.Selected ? "active" : null)"
+       aria-current="@(Model.Selected ? "page" : null)"
+       aria-disabled="@(!Model.Enabled ? "true" : null)">@Model.Label</a>
+}
+</nav>

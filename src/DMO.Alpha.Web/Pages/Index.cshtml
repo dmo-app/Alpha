@@ -1,0 +1,28 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Início";
+}
+
+<h1>DMO Alpha</h1>
+
+@if (Model.Actor.IsAuthenticated)
+{
+    <p>Welcome, @Model.Actor.DisplayName</p>
+
+    @if (!string.IsNullOrWhiteSpace(Model.Actor.ProfileLabel))
+    {
+        <p>Perfil: @Model.Actor.ProfileLabel</p>
+    }
+
+    @if (Model.Actor.IsAdmin)
+    {
+        <p><strong>ADMIN</strong></p>
+    }
+
+    <p><a asp-page="/Modules/Home">Home module</a></p>
+}
+else
+{
+    <p><a asp-page="/Login">Entrar</a></p>
+}

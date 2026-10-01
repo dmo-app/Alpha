@@ -1,0 +1,25 @@
+@page
+@model LoginModel
+@{
+    ViewData["Title"] = "Entrar";
+}
+
+<h2>Entrar</h2>
+
+@if (!string.IsNullOrWhiteSpace(Model.ErrorMessage))
+{
+    <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<form method="post">
+    <div>
+        <label for="identifier">Email ou ID operador</label>
+        <input id="identifier" name="identifier" type="text" value="@Model.Identifier" maxlength="256" />
+    </div>
+    <div>
+        <label for="password">Senha</label>
+        <input id="password" name="password" type="password" maxlength="128" />
+    </div>
+    <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+    <button type="submit">Entrar</button>
+</form>
