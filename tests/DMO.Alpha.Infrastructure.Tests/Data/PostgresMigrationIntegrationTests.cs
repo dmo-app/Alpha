@@ -4,6 +4,7 @@ using DMO.Alpha.Core.Production;
 using DMO.Alpha.Core.Tools;
 using DMO.Alpha.Infrastructure.Boquilhas;
 using DMO.Alpha.Infrastructure.Data;
+using DMO.Alpha.Infrastructure.Tools;
 using Microsoft.EntityFrameworkCore;
 
 namespace DMO.Alpha.Infrastructure.Tests.Data;
@@ -226,6 +227,50 @@ public sealed class PostgresMigrationIntegrationTests
 
             var machine = await db.Machines.SingleAsync(m => m.Code == $"PG-{suffix}");
             db.Machines.Remove(machine);
+
+            await db.SaveChangesAsync();
+        }
+    }
+
+    [SkippableFact]
+    public async Task ToolLookupQuery_AgainstPostgres_RoundTripsProjectionAndToolType()
+    {
+        SkipWithoutConnection();
+
+        await using var db = CreateContext();
+        await db.Database.MigrateAsync();
+
+        var suffix = Guid.NewGuid().ToString("N")[..10];
+        var toolId = $"BQ-TOOL-PG-LOOKUP-{suffix}";
+
+        // Registo canónico da Tool com o tipo convertido em valor (ToolType).
+        db.Tools.Add(new Tool
+        {
+            ToolId = toolId,
+            Type = ToolType.Bq,
+            Reference = "9389T194",
+            Lot = "12"
+        });
+        await db.SaveChangesAsync();
+
+        try
+        {
+            // Prova executada da projeção do read model contra o único
+            // provider relacional de produção (Npgsql), incluindo o
+            // round-trip do ToolType convertido em valor.
+            var result = await new ToolLookupQuery(db).FindByToolIdAsync(toolId);
+
+            Assert.NotNull(result);
+            Assert.Equal(toolId, result.ToolId);
+            Assert.Equal(ToolType.Bq, result.Type);
+            Assert.Equal("9389T194", result.Reference);
+            Assert.Equal("12", result.Lot);
+        }
+        finally
+        {
+            // Limpeza: apaga apenas a Tool semeada por este teste.
+            var tool = await db.Tools.SingleAsync(t => t.ToolId == toolId);
+            db.Tools.Remove(tool);
 
             await db.SaveChangesAsync();
         }

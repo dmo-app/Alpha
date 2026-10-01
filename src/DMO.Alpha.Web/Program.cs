@@ -5,9 +5,11 @@ using DMO.Alpha.Core.Authentication;
 using DMO.Alpha.Core.Boquilhas;
 using DMO.Alpha.Core.Modules;
 using DMO.Alpha.Core.Runtime;
+using DMO.Alpha.Core.Tools;
 using DMO.Alpha.Infrastructure.Authentication;
 using DMO.Alpha.Infrastructure.Boquilhas;
 using DMO.Alpha.Infrastructure.Data;
+using DMO.Alpha.Infrastructure.Tools;
 using DMO.Alpha.Web.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -105,6 +107,8 @@ builder.Services.AddScoped<IBoquilhasRegistoQuery, BoquilhasRegistoQuery>();
 // mais tarde ao seu bq_id de produção.
 builder.Services.AddScoped<ICreateBqRepairTraceHandler, CreateBqRepairTraceHandler>();
 builder.Services.AddScoped<IAssociateBqRepairTraceToContextHandler, AssociateBqRepairTraceToContextHandler>();
+// Tools read path: resolução canónica e só de leitura de uma Tool pelo seu tool_id exato.
+builder.Services.AddScoped<IToolLookupQuery, ToolLookupQuery>();
 builder.Services.AddHostedService<AdminBootstrapHostedService>();
 
 // -------------------------------------------------------------------------
