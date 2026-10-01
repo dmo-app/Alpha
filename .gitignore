@@ -1,0 +1,73 @@
+# Build results
+bin/
+obj/
+out/
+
+# Visual Studio / Rider / VS Code
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# .NET local/user settings
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# User secrets / certificates / keys
+*.pfx
+*.p12
+*.pem
+*.key
+*.cer
+
+# Logs
+*.log
+logs/
+
+# Test results / coverage
+TestResults/
+coverage/
+coverage.*
+*.trx
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+.nuget/
+
+# Frontend dependencies/build output
+node_modules/
+dist/
+build/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Local database files
+*.db
+*.sqlite
+*.sqlite3
+
+# Runtime/generated files
+uploads/
+temp/
+tmp/
+
+# Environment files
+.env
+.env.*
+!.env.example
