@@ -109,6 +109,9 @@ builder.Services.AddScoped<ICreateBqRepairTraceHandler, CreateBqRepairTraceHandl
 builder.Services.AddScoped<IAssociateBqRepairTraceToContextHandler, AssociateBqRepairTraceToContextHandler>();
 // Tools read path: resolução canónica e só de leitura de uma Tool pelo seu tool_id exato.
 builder.Services.AddScoped<IToolLookupQuery, ToolLookupQuery>();
+// Tools read path: descoberta de candidatos para seleção humana explícita
+// (filtros explícitos aplicados no servidor; apenas reduzem candidatos).
+builder.Services.AddScoped<IToolCandidateQuery, ToolCandidateQuery>();
 builder.Services.AddHostedService<AdminBootstrapHostedService>();
 
 // -------------------------------------------------------------------------
